@@ -28,7 +28,7 @@ end
 
 %% Select Devices
 % Select a device for audio playback
-PlaybackID = 3; % Example, replace with desired device index
+PlaybackID = 5; % Example, replace with desired device index
 %Speakers (Realtek(R) Audio) (Windows DirectSound) for future reference
 Recording_ID=1;
 %for recording use Microphone (USB Audio Device) (Windows DirectSound)
@@ -36,28 +36,29 @@ Recording_ID=1;
 %% Speaker Test
 audio = rand(44100,1); % Example audio data
 %construct a player with all the info needed.
-player = audioplayer(audio,44100);
+player = audioplayer(audio,44100,bitrate,PlaybackID);
 % Play audio
 play(player);
 
 %% Mic Test
 [audio,fs] = recordTPT();
-player = audioplayer(audio,fs);
+player = audioplayer(audio,fs,bitrate,PlaybackID);
 play(player)
 PlotTPT(audio,fs)
 
 %% Get Data
 %F#3 is the lowest note on trumpet
-
-record_notes("F#",4)
+record_notes("A#",5)
 
 %% Saving audio data
 function record_notes(start_note, start_octave)
+    global bitrate;
+    global PlaybackID;
     note_names = {'F#','G','G#','A','A#','B','C','C#','D','D#','E','F'};
     start_index = find(strcmp(note_names, start_note)); % starting note name
     octave = start_octave;
     for i = 1:length(note_names)*4
-        current_index = mod(start_index + i - 1, 12);% cycle chromatically up
+        current_index = mod(start_index + i - 1, 13);% cycle chromatically up
         current_note = note_names{current_index};
         if strcmp(current_note, 'D')
             octave = octave + 1;
@@ -68,7 +69,7 @@ function record_notes(start_note, start_octave)
         while redo
             [y,fs]=recordTPT();
             
-            player = audioplayer(y,fs);
+            player = audioplayer(y,fs,bitrate,PlaybackID);
             play(player);
             PlotTPT(y,fs);
 
