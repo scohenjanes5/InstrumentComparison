@@ -88,6 +88,7 @@ function record_notes(start_note, start_octave)
                 audiowrite(filename, y, fs);
             end
         end
+        close all
     end
 end
 
