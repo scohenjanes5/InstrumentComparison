@@ -28,9 +28,9 @@ end
 
 %% Select Devices
 % Select a device for audio playback
-PlaybackID = 5; % Example, replace with desired device index
+PlaybackID = 4; % Example, replace with desired device index
 %Speakers (Realtek(R) Audio) (Windows DirectSound) for future reference
-Recording_ID=1;
+Recording_ID=2;
 %for recording use Microphone (USB Audio Device) (Windows DirectSound)
 
 %% Speaker Test
@@ -48,7 +48,7 @@ PlotTPT(audio,fs)
 
 %% Get Data
 %F#3 is the lowest note on trumpet
-record_notes("A#",5)
+record_notes("E",6)
 
 %% Saving audio data
 function record_notes(start_note, start_octave)
