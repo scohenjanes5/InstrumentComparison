@@ -58,7 +58,7 @@ function record_notes(start_note, start_octave)
     start_index = find(strcmp(note_names, start_note)); % starting note name
     octave = start_octave;
     for i = 1:length(note_names)*4
-        current_index = mod(start_index + i - 1, 13);% cycle chromatically up
+        current_index = mod(start_index + i - 2, 12) + 1; % cycle chromatically up
         current_note = note_names{current_index};
         if strcmp(current_note, 'D')
             octave = octave + 1;
