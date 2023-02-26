@@ -71,35 +71,27 @@ for i = 1:1%length(audioFiles)
 end
 
 
-%% Compute all MFCCs
-% Create an empty table to store MFCCs and category labels
+%% % Create an empty table to store MFCCs and category labels
 % Create a table to store the category labels for each file
 mfccTable = table('Size',[0,3],'VariableTypes',{'string','string','cell'},'VariableNames',{'File','Category','Coefficients'});
 
 % Loop through each file in the audioDatastore
-for i = 1:numel(ads.Files)
+for i = 1:1%numel(ads.Files)
     % Read in the next audio file
     [audio,audioInfo] = read(ads);
-    audio=audio(:,1); %look at only the left channel
     fs = audioInfo.SampleRate;
 
     % Compute the MFCC coefficients for the audio file
-    %coeffs = mfcc(audio,fs);
+    coeffs = mfcc(audio,fs);
 
-    % mfcc
-    win = hann(1024,"periodic");
-    S = stft(audio,"Window",win,"OverlapLength",512,"Centered",false);
-    coeffs = mfcc(S,fs,"LogEnergy","Ignore");
-    
     [~, filename, ~] = fileparts(ads.Files{i});
     % Add the MFCC coefficients and category label for this file to the mfccTable
-    mfccRow = table(string(filename), string(ads.Labels(i)), {coeffs}, 'VariableNames',{'File','Category','Coefficients'});
+    mfccRow = table(string(filename), string(ads.Labels(i)), {coeffs}, 'VariableNames',{'File','Coefficients','Category'});
     mfccTable = [mfccTable; mfccRow];
 
 end
 
 reset(ads)
-disp("Done")
 
 %% Function to FT the contents of wav files
 function [y, fs, fReturn, Fourier]=FTwav(fname)
