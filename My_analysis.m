@@ -70,11 +70,10 @@ for i = 1:1%length(audioFiles)
     legend
 end
 
-
 %% Compute all MFCCs
-% Create an empty table to store MFCCs and category labels
-% Create a table to store the category labels for each file
-mfccTable = table('Size',[0,3],'VariableTypes',{'string','string','cell'},'VariableNames',{'File','Category','Coefficients'});
+% Initialize empty arrays to store data and targets
+MFCC_data = [];
+MFCC_targets = [];
 
 % Loop through each file in the audioDatastore
 for i = 1:numel(ads.Files)
@@ -83,19 +82,21 @@ for i = 1:numel(ads.Files)
     audio=audio(:,1); %look at only the left channel
     fs = audioInfo.SampleRate;
 
-    % Compute the MFCC coefficients for the audio file
-    %coeffs = mfcc(audio,fs);
-
     % mfcc
     win = hann(1024,"periodic");
     S = stft(audio,"Window",win,"OverlapLength",512,"Centered",false);
     coeffs = mfcc(S,fs,"LogEnergy","Ignore");
-    
-    [~, filename, ~] = fileparts(ads.Files{i});
-    % Add the MFCC coefficients and category label for this file to the mfccTable
-    mfccRow = table(string(filename), string(ads.Labels(i)), {coeffs}, 'VariableNames',{'File','Category','Coefficients'});
-    mfccTable = [mfccTable; mfccRow];
+    % Reshape the MFCC coefficients into a column vector and append to the MFCC data array
+    MFCC_data = [MFCC_data, reshape(coeffs,[],1)];
 
+
+    % Append the label to the targets array
+    if string(ads.Labels(i)) == "Wonderphone"
+        MFCC_targets = [MFCC_targets, [1;0]];
+    else % "Jupiter"
+        MFCC_targets = [MFCC_targets, [0;1]];
+    end
+    
 end
 
 reset(ads)
