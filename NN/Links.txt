@@ -1,0 +1,5 @@
+https://www.mathworks.com/help/deeplearning/gs/shallow-networks-for-pattern-recognition-clustering-and-time-series.html
+https://www.mathworks.com/help/deeplearning/gs/classify-patterns-with-a-neural-network.html#f9-26645
+https://www.mathworks.com/help/deeplearning/ref/patternnet.html
+https://www.mathworks.com/help/audio/ref/mfcc.html
+http://neuralnetworksanddeeplearning.com/chap1.html
