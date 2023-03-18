@@ -1,8 +1,8 @@
 %% Setup
 chosenFolder="C:\Users\sande\Desktop\school\Senior Spring\Math and Music\InstrumentComparison\Recordings";
 audioFiles = dir(fullfile(chosenFolder, '*.wav'));
-ads = audioDatastore(fullfile(chosenFolder, {'Wonderphone/Notes', 'Jupiter/Notes'}), ...
-    'IncludeSubfolders', true, 'FileExtensions', '.wav');
+ads = audioDatastore(fullfile(chosenFolder, {'**/Notes'}), ...
+    'FileExtensions', '.wav');
 fileNames = ads.Files;
 
 % Extract labels from filenames and add them to the datastore
@@ -21,7 +21,20 @@ categoricalLabels = categorical(labels, uniqueLabels);
 ads.Labels = categoricalLabels;
 
 %% Check labels
+uniqueLabels = cellstr(unique(ads.Labels));
+numLabels = numel(uniqueLabels);
 countEachLabel(ads)
+
+%% Create label-vector map
+
+label_map = containers.Map();
+for i = 1:numLabels
+    label_vec = zeros(numLabels, 1);
+    label_vec(i) = 1;
+    label_map(uniqueLabels{i}) = label_vec;
+end
+
+label_map("Conn5BNYS")
 
 %% MFCCs
 for i = 1:1%length(audioFiles)
@@ -89,14 +102,9 @@ for i = 1:numel(ads.Files)
     % Reshape the MFCC coefficients into a column vector and append to the MFCC data array
     MFCC_data = [MFCC_data, reshape(coeffs,[],1)];
 
-
     % Append the label to the targets array
-    if string(ads.Labels(i)) == "Wonderphone"
-        MFCC_targets = [MFCC_targets, [1;0]];
-    else % "Jupiter"
-        MFCC_targets = [MFCC_targets, [0;1]];
-    end
-    
+    MFCC_targets = [MFCC_targets, label_map(string(ads.Labels(i)))];
+       
 end
 
 reset(ads)
