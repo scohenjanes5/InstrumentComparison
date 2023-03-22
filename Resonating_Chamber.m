@@ -1,9 +1,7 @@
 % Set the path to the folder containing the audio files
 folder_path="C:\Users\sande\Desktop\school\Senior Spring\Math and Music\InstrumentComparison\Recordings\Jupiter\Notes\";
 %%
-plotEnvs(folder_path, 25000);
-%%
-[envMatrix, avgEnv] = plotEnvs2(folder_path, 25000);
+[envMatrix, avgEnv] = plotEnvs(folder_path, 25000);
 
 %% Get envelope from file
 function [envelope] = GetEnvelope(filename)
@@ -35,42 +33,8 @@ function [envelope] = GetEnvelope(filename)
     envelope = X_log_mag_envelope(f<=fs/2); % Trim the spectral envelope
 end
 
-%% Get all envselopes in a folder
-function plotEnvs(folder_path, f_cutoff)
-    close all
-    % Get a list of all audio files in the folder
-    audio_files = dir(fullfile(folder_path, '*.wav'));
-    
-    % Loop through all audio files and plot their envelopes
-    figure;
-    hold on;
-    for i = 1:length(audio_files)
-        % Load the audio file
-        file_path = fullfile(folder_path, audio_files(i).name);
-        [~, fs] = audioread(file_path);
-        
-        % Get the envelope of the audio file
-        envelope = GetEnvelope(file_path);
-        
-        % Trim the envelope
-        f = (0:length(envelope)-1)*(fs/length(envelope));
-        [~, idx_cutoff] = min(abs(f - f_cutoff));
-        envelope_trim = envelope(1:idx_cutoff);
-        
-        % Plot the envelope
-        f=f(1:idx_cutoff);
-        plot(f, envelope_trim, 'DisplayName', audio_files(i).name);
-    end
-    
-    % Set plot title and axis labels
-    title('Spectral Envelopes of Audio Files');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude (dB)');
-    legend('show', 'Location', 'northeast');
-end
-
-%%
-function [envMatrix, avgEnv] = plotEnvs2(folder_path, f_cutoff)
+%% Get Avg Envelope
+function [envMatrix, avgEnv] = plotEnvs(folder_path, f_cutoff)
     close all
     % Get a list of all audio files in the folder
     audio_files = dir(fullfile(folder_path, '*.wav'));
