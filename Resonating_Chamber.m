@@ -61,9 +61,14 @@ function [envMatrix, avgEnv] = plotEnvs(folder_path, f_cutoff)
         f_trim=f(1:idx_cutoff);
         envelope_trim = envelope(1:idx_cutoff);
        
+        % Check if it is a row vector
+        if size(envelope_trim, 1) > 1
+            % Reshape to a row vector if not
+            envelope_trim = reshape(envelope_trim, 1, []);
+        end
         % Add envelope to envelope matrix
         envMatrix = [envMatrix; envelope_trim];
-        plot(f_trim, envelope_trim, 'DisplayName', audio_files(i).name);
+       plot(f_trim, envelope_trim, 'DisplayName', audio_files(i).name);
     end
     
     % Compute average envelope
