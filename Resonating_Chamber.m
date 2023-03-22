@@ -12,13 +12,13 @@ for i = 1:length(subfolders)
 end
 
 %%
-[avgEnv,f] = plotEnvs(folder_path, 25000);
+[avgEnv,f] = plotEnvs(folder_path, 1500);
 
 %%
-plotAvgEnvs2(folder_paths, 70000)
+[f_trims, avg_envs] = plotAvgEnvs2(folder_paths, 1500);
 
 %% Get envelope from file
-function [envelope] = GetEnvelope(filename)
+function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff)
     [audio_data, fs] = audioread(filename);
     
     % Calculate the FFT of the audio signal
@@ -32,7 +32,6 @@ function [envelope] = GetEnvelope(filename)
     cepstrum = ifft(X_log_mag);
     
     % Apply a low-pass lifter to the cepstrum
-    lifter_cutoff = 1500; % Hz
     lifter_length = round(fs/lifter_cutoff);
     lifter = [ones(1,lifter_length) zeros(1,N-2*lifter_length) ones(1,lifter_length)];
     cepstrum_liftered = cepstrum .* lifter';
@@ -43,12 +42,11 @@ function [envelope] = GetEnvelope(filename)
     % Plot the original log-magnitude spectrum and the spectral envelope
     f = (0:N-1)*(fs/N);
     f_trim = f(f<=fs/2); % Trim the frequency axis
-    X_log_mag_trim = X_log_mag(f<=fs/2); % Trim the log-magnitude spectrum
     envelope = X_log_mag_envelope(f<=fs/2); % Trim the spectral envelope
 end
 
 %% Get Avg Envelope
-function [avgEnv, f_trim] = getAvgEnv(folder_path, f_cutoff)
+function [avgEnv, f_trim] = getAvgEnv(folder_path, lifter_cutoff)
     close all
     % Get a list of all audio files in the folder
     audio_files = dir(fullfile(folder_path, '*.wav'));
@@ -61,17 +59,11 @@ function [avgEnv, f_trim] = getAvgEnv(folder_path, f_cutoff)
         % Load the audio file
         file_path = fullfile(folder_path, audio_files(i).name);
             
-        [~, fs] = audioread(file_path);
-            
         % Get the envelope of the audio file
-        envelope = GetEnvelope(file_path);
+        [envelope, f] = GetEnvelope(file_path, lifter_cutoff);
         
-        % Trim the envelope
-        f = (0:length(envelope)-1)*(fs/length(envelope));
-        [~, idx_cutoff] = min(abs(f - f_cutoff));
-        
-        f_trim=reshape(f(1:idx_cutoff), 1, []);
-        envelope_trim = envelope(1:idx_cutoff);
+        f_trim=reshape(f(1:end), 1, []);
+        envelope_trim = envelope(1:end);
        
         % Check if it is a row vector
         if size(envelope_trim, 1) > 1
@@ -88,7 +80,7 @@ end
 
 
 %% Get Avg Envelope
-function [avgEnv, f_trim] = plotEnvs(folder_path, f_cutoff)
+function [avgEnv, f_trim] = plotEnvs(folder_path, lifter_cutoff)
     close all
     % Get a list of all audio files in the folder
     audio_files = dir(fullfile(folder_path, '*.wav'));
@@ -103,17 +95,11 @@ function [avgEnv, f_trim] = plotEnvs(folder_path, f_cutoff)
         % Load the audio file
         file_path = fullfile(folder_path, audio_files(i).name);
             
-        [~, fs] = audioread(file_path);
-            
         % Get the envelope of the audio file
-        envelope = GetEnvelope(file_path);
+        [ envelope, f ] = GetEnvelope(file_path, lifter_cutoff);
         
-        % Trim the envelope
-        f = (0:length(envelope)-1)*(fs/length(envelope));
-        [~, idx_cutoff] = min(abs(f - f_cutoff));
-        
-        f_trim=f(1:idx_cutoff);
-        envelope_trim = envelope(1:idx_cutoff);
+        f_trim=reshape(f(1:end), 1, []);
+        envelope_trim = envelope(1:end);
        
         % Check if it is a row vector
         if size(envelope_trim, 1) > 1
@@ -178,9 +164,9 @@ function [f_trims, avg_envs] = plotAvgEnvs2(folder_paths, f_cutoff)
 
     % Loop through all folders and plot their average envelopes
     for i = 1:length(folder_paths)
-        disp(folder_paths{i})
-        parentdir = extractAfter(fileparts(folder_paths(i)), 'Recordings\');
-        disp(parentdir)
+        %disp(folder_paths{i})
+        %parentdir = extractAfter(fileparts(folder_paths(i)), 'Recordings\');
+        %disp(parentdir)
 
         % Get the average envelope and envelope matrix for the current folder
         [currAvgEnv, f_trim] = getAvgEnv(folder_paths{i}, f_cutoff);
