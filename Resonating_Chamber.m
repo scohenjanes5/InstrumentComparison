@@ -1,37 +1,8 @@
 % Set the path to the folder containing the audio files
 folder_path="C:\Users\sande\Desktop\school\Senior Spring\Math and Music\InstrumentComparison\Recordings\Jupiter\Notes\";
+%%
 
-%% Get all envselopes in a folder
-close all
-% Get a list of all audio files in the folder
-audio_files = dir(fullfile(folder_path, '*.wav'));
-
-% Loop through all audio files and plot their envelopes
-figure;
-hold on;
-for i = 1:length(audio_files)
-    % Load the audio file
-    file_path = fullfile(folder_path, audio_files(i).name);
-    [audio_data, fs] = audioread(file_path);
-
-    % Get the envelope of the audio file
-    envelope = GetEnvelope(file_path);
-
-    % Trim the envelope
-    f = (0:length(envelope)-1)*(fs/length(envelope));
-    f_cutoff = 25000;
-    [~, idx_cutoff] = min(abs(f - f_cutoff));
-    envelope_trim = envelope(1:idx_cutoff);
-
-    % Plot the envelope
-    plot(f(1:idx_cutoff), envelope_trim, 'DisplayName', audio_files(i).name);
-end
-
-% Set plot title and axis labels
-title('Spectral Envelopes of Audio Files');
-xlabel('Frequency (Hz)');
-ylabel('Magnitude (dB)');
-legend('show', 'Location', 'northeast');
+plotEnvs(folder_path,25000);
 
 %% Get envelope from file
 function [envelope] = GetEnvelope(filename)
@@ -61,4 +32,37 @@ function [envelope] = GetEnvelope(filename)
     f_trim = f(f<=fs/2); % Trim the frequency axis
     X_log_mag_trim = X_log_mag(f<=fs/2); % Trim the log-magnitude spectrum
     envelope = X_log_mag_envelope(f<=fs/2); % Trim the spectral envelope
+end
+
+%% Get all envselopes in a folder
+function plotEnvs(folder_path, f_cutoff)
+    close all
+    % Get a list of all audio files in the folder
+    audio_files = dir(fullfile(folder_path, '*.wav'));
+    
+    % Loop through all audio files and plot their envelopes
+    figure;
+    hold on;
+    for i = 1:length(audio_files)
+        % Load the audio file
+        file_path = fullfile(folder_path, audio_files(i).name);
+        [~, fs] = audioread(file_path);
+        
+        % Get the envelope of the audio file
+        envelope = GetEnvelope(file_path);
+        
+        % Trim the envelope
+        f = (0:length(envelope)-1)*(fs/length(envelope));
+        [~, idx_cutoff] = min(abs(f - f_cutoff));
+        envelope_trim = envelope(1:idx_cutoff);
+        
+        % Plot the envelope
+        plot(f(1:idx_cutoff), envelope_trim, 'DisplayName', audio_files(i).name);
+    end
+    
+    % Set plot title and axis labels
+    title('Spectral Envelopes of Audio Files');
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude (dB)');
+    legend('show', 'Location', 'northeast');
 end
