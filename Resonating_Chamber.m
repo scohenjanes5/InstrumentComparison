@@ -23,13 +23,13 @@ function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff)
     
     % Calculate the FFT of the audio signal
     N = length(audio_data);
-    X = fft(audio_data);
+    Y = fft(audio_data);
     
     % Calculate the log-magnitude spectrum
-    X_log_mag = log(abs(X));
+    Y_log_mag = log(abs(Y));
     
     % Compute the inverse FFT of the log-magnitude spectrum
-    cepstrum = ifft(X_log_mag);
+    cepstrum = ifft(Y_log_mag);
     
     % Apply a low-pass lifter to the cepstrum
     lifter_length = round(fs/lifter_cutoff);
@@ -37,12 +37,12 @@ function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff)
     cepstrum_liftered = cepstrum .* lifter';
     
     % Convert the liftered cepstrum back to the log-magnitude spectrum
-    X_log_mag_envelope = real(fft(cepstrum_liftered));
+    Y_log_mag_envelope = real(fft(cepstrum_liftered));
     
     % Plot the original log-magnitude spectrum and the spectral envelope
     f = (0:N-1)*(fs/N);
     f_trim = f(f<=fs/2); % Trim the frequency axis
-    envelope = X_log_mag_envelope(f<=fs/2); % Trim the spectral envelope
+    envelope = Y_log_mag_envelope(f<=fs/2); % Trim the spectral envelope
 end
 
 %% Get Avg Envelope
