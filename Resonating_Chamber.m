@@ -69,19 +69,15 @@ function [envMatrix, avgEnv] = plotEnvs(folder_path, f_cutoff)
     % Compute average envelope
     avgEnv = mean(envMatrix, 1);
     
+    % Plot average envelope with thicker line and darker shade
+    plot(f_trim, avgEnv, 'DisplayName', 'Average Envelope', 'LineWidth', 3, 'Color', [0, 0, 0]);
 
-    % Plot individual envelopes
+    % Add title and labels
     title('Spectral Envelopes of Audio Files');
     xlabel('Frequency (Hz)');
     ylabel('Magnitude (dB)');
-    legend('show', 'Location', 'northeast');
     
-    % Plot average envelope
-    figure;
-    plot(f_trim, avgEnv, 'DisplayName', 'Average Envelope');
-    title('Average Spectral Envelope of Audio Files');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude (dB)');
+    % Add legend
     legend('show', 'Location', 'northeast');
 end
 
