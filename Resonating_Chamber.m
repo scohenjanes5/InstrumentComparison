@@ -15,7 +15,7 @@ end
 [avgEnv,f] = plotEnvs(folder_path, 1500);
 
 %%
-[f_trims, avg_envs] = plotAvgEnvs2(folder_paths, 1500);
+[f_trims, avg_envs] = plotAvgEnvs(folder_paths, 1500);
 
 %% Get envelope from file
 function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff)
@@ -118,35 +118,7 @@ function [avgEnv, f_trim] = plotEnvs(folder_path, lifter_cutoff)
 end
 
 
-%% Plot avg envs together for different trumpets
-function plotAvgEnvs(folder_paths, f_cutoff)
-    figure;
-    hold on;
-    % Loop through all folders and plot their average envelopes
-    for i = 1:length(folder_paths)
-        disp(folder_paths{i})
-        parentdir = extractAfter(fileparts(folder_paths(i)), 'Recordings\');
-        disp(parentdir)
-
-        % Get the average envelope and envelope matrix for the current folder
-        [currAvgEnv, f_trim] = getAvgEnv(folder_paths{i}, f_cutoff);
-        
-        % Plot current average envelope with folder name as legend label
-        plot(f_trim, currAvgEnv, 'DisplayName', parentdir);
-    end
-    
-    % Add title and labels
-    title('Spectral Envelopes of Audio Files');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude (dB)');
-    
-    % Add legend
-    legend('show', 'Location', 'northeast');
-    hold off;
-end
-
-
-function [f_trims, avg_envs] = plotAvgEnvs2(folder_paths, f_cutoff)
+function [f_trims, avg_envs] = plotAvgEnvs(folder_paths, f_cutoff)
     % Initialize arrays to store f_trim and currAvgEnv for each folder
     f_trims = [];
     avg_envs = [];
