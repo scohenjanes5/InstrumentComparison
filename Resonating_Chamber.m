@@ -74,7 +74,7 @@ function [avgEnv, f_trim] = getAvgEnv(folder_path, lifter_cutoff)
 end
 
 
-%% Get Avg Envelope
+%% Plot Avg Envelope and components
 function [avgEnv, f_trim] = plotEnvs(folder_path, lifter_cutoff)
     close all
     % Get a list of all audio files in the folder
@@ -117,7 +117,7 @@ function [avgEnv, f_trim] = plotEnvs(folder_path, lifter_cutoff)
     hold off;
 end
 
-
+%% Plot all averages together
 function [f_trims, avg_envs] = plotAvgEnvs(folder_paths, f_cutoff)
     % Initialize arrays to store f_trim and currAvgEnv for each folder
     f_trims = [];
