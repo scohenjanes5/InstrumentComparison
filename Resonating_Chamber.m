@@ -15,7 +15,7 @@ end
 [avgEnv,f] = plotEnvs(folder_path, 25000);
 
 %%
-plotAvgEnvs2(folder_paths, 25000)
+plotAvgEnvs2(folder_paths, 70000)
 
 %% Get envelope from file
 function [envelope] = GetEnvelope(filename)
