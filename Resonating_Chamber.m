@@ -1,7 +1,21 @@
 % Set the path to the folder containing the audio files
 folder_path="C:\Users\sande\Desktop\school\Senior Spring\Math and Music\InstrumentComparison\Recordings\Jupiter\Notes\";
+root_folder = 'C:\Users\sande\Desktop\school\Senior Spring\Math and Music\InstrumentComparison\Recordings\';
+
+subfolders = {'Jupiter', 'Wonderphone'};  % List of subfolders to include
+folder_paths = {};  % Initialize the cell array of folder paths
+
+for i = 1:length(subfolders)
+    subfolder = subfolders{i};
+    folder_path = fullfile(root_folder, subfolder, 'Notes');
+    folder_paths = [folder_paths, folder_path];
+end
+
 %%
-[avgEnv] = plotEnvs(folder_path, 25000);
+[avgEnv,f] = plotEnvs(folder_path, 25000);
+
+%%
+plotAvgEnvs(folder_paths, 25000)
 
 %% Get envelope from file
 function [envelope] = GetEnvelope(filename)
@@ -34,7 +48,7 @@ function [envelope] = GetEnvelope(filename)
 end
 
 %% Get Avg Envelope
-function [avgEnv] = plotEnvs(folder_path, f_cutoff)
+function [avgEnv, f_trim] = plotEnvs(folder_path, f_cutoff)
     close all
     % Get a list of all audio files in the folder
     audio_files = dir(fullfile(folder_path, '*.wav'));
@@ -77,6 +91,33 @@ function [avgEnv] = plotEnvs(folder_path, f_cutoff)
     % Plot average envelope with thicker line and darker shade
     plot(f_trim, avgEnv, 'DisplayName', 'Average Envelope', 'LineWidth', 3, 'Color', [0, 0, 0]);
 
+    % Add title and labels
+    title('Spectral Envelopes of Audio Files');
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude (dB)');
+    
+    % Add legend
+    legend('show', 'Location', 'northeast');
+    hold off;
+end
+
+function plotAvgEnvs(folder_paths, f_cutoff)
+
+    figure;
+    hold on;
+    % Loop through all folders and plot their average envelopes
+    for i = 1:length(folder_paths)
+        
+        parentdir = extractAfter(fileparts(folder_paths(i)), 'Recordings\');
+        disp(parentdir)
+
+        % Get the average envelope and envelope matrix for the current folder
+        [currAvgEnv, f_trim] = plotEnvs(folder_paths{i}, f_cutoff);
+            
+        % Plot current average envelope with folder name as legend label
+        plot(f_trim, currAvgEnv, 'DisplayName', parentdir);
+    end
+    
     % Add title and labels
     title('Spectral Envelopes of Audio Files');
     xlabel('Frequency (Hz)');
