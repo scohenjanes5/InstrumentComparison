@@ -1,7 +1,7 @@
 % Set the path to the folder containing the audio files
 folder_path="C:\Users\sande\Desktop\school\Senior Spring\Math and Music\InstrumentComparison\Recordings\Jupiter\Notes\";
 %%
-[envMatrix, avgEnv] = plotEnvs(folder_path, 25000);
+[avgEnv] = plotEnvs(folder_path, 25000);
 
 %% Get envelope from file
 function [envelope] = GetEnvelope(filename)
@@ -34,7 +34,7 @@ function [envelope] = GetEnvelope(filename)
 end
 
 %% Get Avg Envelope
-function [envMatrix, avgEnv] = plotEnvs(folder_path, f_cutoff)
+function [avgEnv] = plotEnvs(folder_path, f_cutoff)
     close all
     % Get a list of all audio files in the folder
     audio_files = dir(fullfile(folder_path, '*.wav'));
