@@ -100,6 +100,9 @@ function [avgEnv, f_trim] = plotEnvs(folder_path, lifter_cutoff)
         envMatrix = [envMatrix; envelope];
        plot(f_trim, envelope, 'DisplayName', audio_files(i).name);
     end
+
+    name = extractAfter(folder_path, 'Recordings\');
+    name = extractBefore(name, '\')
     
     % Compute average envelope
     avgEnv = mean(envMatrix, 1);
@@ -108,7 +111,7 @@ function [avgEnv, f_trim] = plotEnvs(folder_path, lifter_cutoff)
     plot(f_trim, avgEnv, 'DisplayName', 'Average Envelope', 'LineWidth', 3, 'Color', [0, 0, 0]);
 
     % Add title and labels
-    title('Spectral Envelopes of Audio Files');
+    title('Spectral Envelopes of Audio Files',name);
     xlabel('Frequency (Hz)');
     ylabel('Magnitude (dB)');
     
@@ -142,7 +145,7 @@ function [f_trims, avg_envs] = plotAvgEnvs(folder_paths, f_cutoff)
     plot(f_trims', avg_envs');
     
     % Add title and labels
-    title('Spectral Envelopes of Audio Files');
+    title('Average Spectral Envelopes of Different Trumpets');
     xlabel('Frequency (Hz)');
     ylabel('Magnitude (dB)');
     legend({'Jupiter', 'Wonderphone', 'Conn5BNYS'});
