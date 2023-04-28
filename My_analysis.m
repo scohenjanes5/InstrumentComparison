@@ -36,7 +36,7 @@ end
 
 label_map("Conn5BNYS")
 
-%% MFCCs
+%% MFCC for one sample
 for i = 1:1%length(audioFiles)
     % Load the audio file
     audioFile = fullfile(chosenFolder, audioFiles(i).name);
