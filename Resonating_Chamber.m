@@ -15,7 +15,10 @@ end
 [avgEnv,f] = plotEnvs(folder_path, 1500);
 
 %%
-[f_trims, avg_envs] = plotAvgEnvs(folder_paths, 1500);
+[f_trims, avg_envs] = plotAvgEnvs(folder_paths, 1500, "lin");
+
+%%
+[mel_trims, mel_avg_envs] = plotAvgEnvs(folder_paths, 1500, "mel");
 
 %% Get envelope from file
 function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff)
@@ -120,8 +123,7 @@ function [avgEnv, f_trim] = plotEnvs(folder_path, lifter_cutoff)
     hold off;
 end
 
-%% Plot all averages together
-function [f_trims, avg_envs] = plotAvgEnvs(folder_paths, f_cutoff)
+function [f_trims, avg_envs] = plotAvgEnvs(folder_paths, f_cutoff, freqMode)
     % Initialize arrays to store f_trim and currAvgEnv for each folder
     f_trims = [];
     avg_envs = [];
@@ -135,6 +137,10 @@ function [f_trims, avg_envs] = plotAvgEnvs(folder_paths, f_cutoff)
 
         % Get the average envelope and envelope matrix for the current folder
         [currAvgEnv, f_trim] = getAvgEnv(folder_paths{i}, f_cutoff);
+        if freqMode == "mel"
+            % Convert frequency to mel scale
+            f_trim = 2595 * log10(1 + f_trim / 700);
+        end
         f_trims = [f_trims; f_trim];
         avg_envs = [avg_envs; currAvgEnv];
         %names = [names; cellstr(parentdir)];
@@ -145,8 +151,13 @@ function [f_trims, avg_envs] = plotAvgEnvs(folder_paths, f_cutoff)
     plot(f_trims', avg_envs');
     
     % Add title and labels
-    title('Average Spectral Envelopes of Different Trumpets');
-    xlabel('Frequency (Hz)');
+    if freqMode == "mel"
+        title('Average Spectral Envelopes of Different Trumpets (Mel Scale)');
+        xlabel('Mel Frequency (mels)');
+    else
+        title('Average Spectral Envelopes of Different Trumpets (Linear Scale)');
+        xlabel('Frequency (Hz)');
+    end
     ylabel('Magnitude (dB)');
     legend({'Jupiter', 'Wonderphone', 'Conn5BNYS'});
 end
