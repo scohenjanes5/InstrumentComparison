@@ -1,5 +1,6 @@
 % Set the path to the folder containing the audio files
 folder_path="C:\Users\sande\Desktop\school\Senior Spring\Math and Music\InstrumentComparison\Recordings\Jupiter\Notes\";
+example_file=fullfile(folder_path,"A#3.wav");
 root_folder = 'C:\Users\sande\Desktop\school\Senior Spring\Math and Music\InstrumentComparison\Recordings\';
 
 subfolders = {'Jupiter', 'Wonderphone', 'Conn5BNYS'};  % List of subfolders to include
@@ -18,7 +19,18 @@ end
 [f_trims, avg_envs] = plotAvgEnvs(folder_paths, 1500, "lin");
 
 %%
-[mel_trims, mel_avg_envs] = plotAvgEnvs(folder_paths, 1500, "mel");
+%[mel_trims, mel_avg_envs] = plotAvgEnvs(folder_paths, 1500, "mel");
+% Convert frequency to mel scale
+f_trim = 2595 * log10(1 + f_trims / 700);
+figure;
+plot(f_trim', avg_envs');
+title('Average Spectral Envelopes of Different Trumpets (Mel Scale)');
+xlabel('Mel Frequency (mels)');
+ylabel('Magnitude (dB)');
+legend({'Jupiter', 'Wonderphone', 'Conn5BNYS'});
+
+%%
+[env, f_trims2] = GetEnvelope(example_file, 1500);
 
 %% Get envelope from file
 function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff)
