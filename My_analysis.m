@@ -37,51 +37,51 @@ end
 label_map("Conn5BNYS")
 
 %% MFCC for one sample
-for i = 1:1%length(audioFiles)
-    % Load the audio file
-    audioFile = fullfile(chosenFolder, audioFiles(i).name);
-    [audio, fs] = audioread(audioFile);
-   
-    % mfcc
-    [coeffs1,delta,deltaDelta,loc] = mfcc(audio,fs);
-    mfcc(audio,fs)
+% Load the audio file
+[audio,audioInfo] = read(ads);
+audio=audio(:,1); %look at only the left channel
+fs = audioInfo.SampleRate;
 
-    win = hann(1024,"periodic");
-    S = stft(audio,"Window",win,"OverlapLength",512,"Centered",false);
+% mfcc
+[coeffs1,delta,deltaDelta,loc] = mfcc(audio,fs);
+mfcc(audio,fs)
 
-    coeffs = mfcc(S,fs,"LogEnergy","Ignore");
+win = hann(1024,"periodic");
+S = stft(audio,"Window",win,"OverlapLength",512,"Centered",false);
 
+coeffs = mfcc(S,fs,"LogEnergy","Ignore");
 
-    % plot
-    t = (0:size(audio,1)-1)/fs;
-    sound(audio,fs)
-    figure;
-    plot(t,audio)
-    xlabel("Time (s)")
-    ylabel("Amplitude")
-    title("Sample Utterance from Training Set")
+% plot
+t = (0:size(audio,1)-1)/fs;
+sound(audio,fs)
+figure;
+plot(t,audio)
+xlabel("Time (s)")
+ylabel("Amplitude")
+title("Sample Utterance from Training Set")
 
-    % plot MFCCs
-    nbins = 60;
-    coefficientToAnalyze = 4;
+% plot MFCCs
+nbins = 60;
+coefficientToAnalyze = 4;
 
-    figure;
-    histogram(coeffs(:,coefficientToAnalyze+1),nbins,"Normalization","pdf")
-    title(sprintf("Coefficient %d",coefficientToAnalyze))
+figure;
+histogram(coeffs(:,coefficientToAnalyze+1),nbins,"Normalization","pdf")
+title(sprintf("Coefficient %d",coefficientToAnalyze))
 
-    % get FT data
-    [~,~,f_tpt,TPT_Fourier]=FTwav(audioFile);
+% get FT data
+[~,~,f_tpt,TPT_Fourier]=FTwav(audioInfo.FileName);
 
-    %plot Fourier transform
-    figure;
-    [~, filename, ~] = fileparts(audioFile);
-    plot(f_tpt,abs(TPT_Fourier),'DisplayName',filename)
-    xlim([0 7000])
-    xlabel('Frequency (Hz)')
-    ylabel('Magnitude')
-    title('Fourier Transform')    
-    legend
-end
+%plot Fourier transform
+figure;
+[~, filename, ~] = fileparts(audioInfo.FileName);
+plot(f_tpt,abs(TPT_Fourier),'DisplayName',filename)
+xlim([0 7000])
+xlabel('Frequency (Hz)')
+ylabel('Magnitude')
+title('Fourier Transform')    
+legend
+
+reset(ads)
 
 %% Compute all MFCCs
 % Initialize empty arrays to store data and targets
