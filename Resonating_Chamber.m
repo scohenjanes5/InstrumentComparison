@@ -58,6 +58,25 @@ function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff)
     f = (0:N-1)*(fs/N);
     f_trim = f(f<=fs/2); % Trim the frequency axis
     envelope = Y_log_mag_envelope(f<=fs/2); % Trim the spectral envelope
+
+    figure;
+    hold on;
+    plot(f_trim, real(cepstrum(f<=fs/2)), 'DisplayName', 'Unfiltered Cepstrum');
+    plot(f_trim, lifter(f<=fs/2), 'DisplayName', 'Lifter');
+    plot(f_trim, real(cepstrum_liftered(f<=fs/2)), 'DisplayName', 'Filtered Cepstrum');
+    hold off;
+    title('Cepstral Liftering');
+    xlabel('Quefrency (samples)');
+    ylabel('Magnitude');
+    legend('Location', 'best');
+    hold off
+
+    figure;
+    plot(f_trim, Y_log_mag(f<=fs/2), 'DisplayName', 'Log-Magnitude Spectrum');
+    title('Log Spectrum');
+    xlabel('Quefrency (samples)');
+    ylabel('Magnitude');
+    legend('Location', 'best');
 end
 
 %% Get Avg Envelope
