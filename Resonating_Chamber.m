@@ -67,7 +67,7 @@ function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff, plotOrNo)
         plot(f_trim, real(cepstrum_liftered(f<=fs/2)), 'DisplayName', 'Filtered Cepstrum');
         hold off;
         title('Cepstral Liftering');
-        xlabel('Quefrency (samples)');
+        xlabel('Quefrency (ms)');
         ylabel('Magnitude');
         legend('Location', 'best');
         hold off
