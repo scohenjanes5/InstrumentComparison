@@ -30,10 +30,10 @@ ylabel('Magnitude (dB)');
 legend({'Jupiter', 'Wonderphone', 'Conn5BNYS'});
 
 %%
-[env, f_trims2] = GetEnvelope(example_file, 1500);
+[env, f_trims2] = GetEnvelope(example_file, 1500, "plot");
 
 %% Get envelope from file
-function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff)
+function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff, plotOrNo)
     [audio_data, fs] = audioread(filename);
     
     % Calculate the FFT of the audio signal
@@ -59,24 +59,26 @@ function [envelope, f_trim] = GetEnvelope(filename, lifter_cutoff)
     f_trim = f(f<=fs/2); % Trim the frequency axis
     envelope = Y_log_mag_envelope(f<=fs/2); % Trim the spectral envelope
 
-    figure;
-    hold on;
-    plot(f_trim, real(cepstrum(f<=fs/2)), 'DisplayName', 'Unfiltered Cepstrum');
-    plot(f_trim, lifter(f<=fs/2), 'DisplayName', 'Lifter');
-    plot(f_trim, real(cepstrum_liftered(f<=fs/2)), 'DisplayName', 'Filtered Cepstrum');
-    hold off;
-    title('Cepstral Liftering');
-    xlabel('Quefrency (samples)');
-    ylabel('Magnitude');
-    legend('Location', 'best');
-    hold off
-
-    figure;
-    plot(f_trim, Y_log_mag(f<=fs/2), 'DisplayName', 'Log-Magnitude Spectrum');
-    title('Log Spectrum');
-    xlabel('Quefrency (samples)');
-    ylabel('Magnitude');
-    legend('Location', 'best');
+    if plotOrNo == "plot"
+        figure;
+        hold on;
+        plot(f_trim, real(cepstrum(f<=fs/2)), 'DisplayName', 'Unfiltered Cepstrum');
+        plot(f_trim, lifter(f<=fs/2), 'DisplayName', 'Lifter');
+        plot(f_trim, real(cepstrum_liftered(f<=fs/2)), 'DisplayName', 'Filtered Cepstrum');
+        hold off;
+        title('Cepstral Liftering');
+        xlabel('Quefrency (samples)');
+        ylabel('Magnitude');
+        legend('Location', 'best');
+        hold off
+    
+        figure;
+        plot(f_trim, Y_log_mag(f<=fs/2), 'DisplayName', 'Log-Magnitude Spectrum');
+        title('Log Spectrum');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude (dB)');
+        legend('Location', 'best');
+    end
 end
 
 %% Get Avg Envelope
@@ -94,7 +96,7 @@ function [avgEnv, f_trim] = getAvgEnv(folder_path, lifter_cutoff)
         file_path = fullfile(folder_path, audio_files(i).name);
             
         % Get the envelope of the audio file
-        [envelope, f] = GetEnvelope(file_path, lifter_cutoff);
+        [envelope, f] = GetEnvelope(file_path, lifter_cutoff, "no");
         
         f_trim=reshape(f(1:end), 1, []);
         envelope = reshape(envelope, 1, []);
@@ -125,7 +127,7 @@ function [avgEnv, f_trim] = plotEnvs(folder_path, lifter_cutoff)
         file_path = fullfile(folder_path, audio_files(i).name);
             
         % Get the envelope of the audio file
-        [ envelope, f ] = GetEnvelope(file_path, lifter_cutoff);
+        [ envelope, f ] = GetEnvelope(file_path, lifter_cutoff, "no");
         
         f_trim=reshape(f(1:end), 1, []);
         envelope = reshape(envelope, 1, []);
@@ -136,7 +138,7 @@ function [avgEnv, f_trim] = plotEnvs(folder_path, lifter_cutoff)
     end
 
     name = extractAfter(folder_path, 'Recordings\');
-    name = extractBefore(name, '\')
+    name = extractBefore(name, '\');
     
     % Compute average envelope
     avgEnv = mean(envMatrix, 1);
