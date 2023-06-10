@@ -1,6 +1,6 @@
 # InstrumentComparison
 
-For code documentation, see [here](CodeDocumentation).
+For code documentation, see [here](CodeDocumentation#code-documentation).
 
 ## Introduction
 The crux of this project is to see if design choices in the manufacture of different models of the same instrument result in objective differences in the sound of the instrument. There is a lively discussion online about the differences in sound quality and playability of horns from different manufacturers, models and even years within the same production line! My original opinion is that once a trumpet is at a certain level of quality, it becomes harder to distinguish any of them from each other in the hands of the same player. Does switching out the main tuning slide from a D-shaped one to a C-shaped one make a difference? I would say no, and that the people saying they can hear a difference are preconditioning themselves to hear an improvement to justify their purchase. I aim to answer questions like these objectively with computational assistance.
