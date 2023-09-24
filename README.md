@@ -22,13 +22,13 @@ Single recordings of every note in my playable range were used for each instrume
 
 The quality of the data used to train a neural network is as important as the training algorithm itself. The audio samples I collected were 3 seconds long, but sampling at 44100 Hz means 13,2300 samples per recording. This is overkill and would likely give bad results or be hard to optimize at all. In the audio processing field, a common way to capture how sound changes over the course of a recording with minimal data points are the Mel Frequency Cepstral Coefficients (MFCCs). The Mel frequency scale is designed to sound linear to humans, which is not achieved by the Hz scale. The difference between C2 (65 Hz) and C4 (262 Hz) sounds much larger than G6 (1568 Hz) and A6 (1760 Hz), even though both are separated by about 200 Hz. This is because human perception of pitch scale logarithmically. We can convert between Hz and mels with
 
-m = 2595 * log<sub>10</sub>(1 + f/700), where m is the Mel frequency with units of mel and f is the frequency in Hz. 
+$m = 2595 * log_{10}(1 + f/700)$, where m is the Mel frequency with units of mel and f is the frequency in Hz. 
 
 The Mel Frequency Cepstrum is obtained by
 
-𝐶=𝐷𝐶𝑇(log<sub>10</sub>(𝑚(|ℱ(𝑥(𝑡))|2))),
+$𝐶=𝐷𝐶𝑇(log{10}(𝑚(2|ℱ(𝑥(𝑡))|)))$,
 
-where x(t) is the original waveform, ℱ is the Fourier transformation, m is the conversion to the Mel spectrum, and DCT is the discrete cosine transformation. The log operation creates a log-spectrum, which plots frequency by loudness. The final transformation creates a spectrum of a spectrum, which is known as a sepstrum. In this case, it is plotted in the quefrency domain, which uses units of ms.
+where $x(t)$ is the original waveform, $ℱ$ is the Fourier transformation, $m$ is the conversion to the Mel spectrum, and $DCT$ is the discrete cosine transformation. The log operation creates a log-spectrum, which plots frequency by loudness. The final transformation creates a spectrum of a spectrum, which is known as a sepstrum. In this case, it is plotted in the quefrency domain, which uses units of ms.
 To get the MFCCs, the original recording is divided into several frames with a short duration. The frames typically overlap. After the Fourier transformation is taken, a set of k overlapping triangular filters is applied. These are constructed with peaks spaced equally on the mel spectrum, which causes the bases to be wider in the Hz frequency domain. Each filter is applied individually, and the weighted average of each filtered spectrum is computed on each band after filtering, i.e., k averages are obtained. These are plotted as peaks on the spectrum, which is then converted to the cepstrum as shown above. The MFCCs are the peak heights of the cepstrum obtained for each window of the recording. In this work, I used 13 coefficients and 257 samples per recording. I reshaped the MFCC matrix to a 3341-vector to use as input data for the neural network.
 
 ## Results
